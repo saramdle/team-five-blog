@@ -1,0 +1,13 @@
+스키마명은 blog로 생성하시오.
+
+이하 테이블생성문
+
+
+CREATE TABLE `blogcontent` (
+  `Id` int unsigned NOT NULL AUTO_INCREMENT,
+  `Title` varchar(45) COLLATE utf8mb4_bin NOT NULL,
+  `Content` varchar(45) COLLATE utf8mb4_bin NOT NULL,
+  `CreateDt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`Id`,`CreateDt`,`Content`,`Title`),
+  UNIQUE KEY `Id_UNIQUE` (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='블로그'
