@@ -7,8 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
-    @Query(value = "select id,title,content from blogcontent", nativeQuery = true)
-    List<User> search();
+public interface PostRepository extends JpaRepository<PostsModel, Long> {
 
+    public List<PostsModel> findAll();
 }
