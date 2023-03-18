@@ -8,6 +8,5 @@ import java.util.List;
 
 @Repository
 public interface PostRepository extends JpaRepository<PostsModel, Long> {
-
     public List<PostsModel> findAll();
 }

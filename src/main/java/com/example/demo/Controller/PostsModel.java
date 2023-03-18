@@ -25,21 +25,21 @@ public class PostsModel {
 
     //타이틀
     @Column(name = "Title")
-    private String Title;
+    private String title;
 
     //내용
     @Column(name = "Content")
-    private String Content;
+    private String content;
 
     @Column(name = "Img")
-    private String Img;
+    private String img;
 
     @Column(name = "Date")
-    private Date UpdateDt;
+    private Date updateDt;
 
     @Column(name = "Uid")
-    private int Uid;
+    private int uid;
     @Column(name = "Cat")
-    private String Cat;
+    private String cat;
 
 }

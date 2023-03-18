@@ -1,5 +1,6 @@
 package com.example.demo.Controller;
 
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -39,31 +40,42 @@ public class TestConroller {
     @GetMapping("/postList")
     public  DataModel[] postList() {
         List<PostsModel> postList = postsRepository.findAll();
-        System.out.println(" ttt :: "+postList.size());
-        int size = postList.size()/3;
-        DataModel[] models = new DataModel[3];
-        int temp = 1;
-        int temp2 = 0;
+        System.out.println(" cnt :: "+postList.size());
 
-        models[0] = new DataModel();
-        models[1] = new DataModel();
-        models[2] = new DataModel();
+        int mock = postList.size()/3;
+        int lest =  postList.size()%3;
 
-        for(int i=0; i<3; i++)
-        {
-            if(i == 2){
-                models[temp2].Id = temp;
-                temp2++;
-            }
+        int size = mock;
+        if(lest > 0)
+            size += 1;
 
-            if(i/postList.size() == 0){
+        DataModel[] models = new DataModel[size];
 
-            }
-
-
-            models[temp2].Hot.add(postList.get(i));
+        for (int i=0; i < size; i++){
+            models[i] = new DataModel();
         }
 
+        int temp = 1;
+        int temp2 = 0;
+        int c = 0;
+        for(int i=0; i <= postList.size(); i++)
+        {
+            if(c == 3){
+                if(i != postList.size()){
+                    temp2++;
+                    temp++;
+                    models[temp2].hot.add(postList.get(i));
+                    c = 1;
+                }
+            }
+            else{
+                if(models[temp2].id == 0)
+                    models[temp2].id = temp;
+                if(i != postList.size())
+                    models[temp2].hot.add(postList.get(i));
+                c++;
+            }
+        }
         return models;
     }
 

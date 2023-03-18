@@ -10,6 +10,6 @@ import java.util.List;
 @Getter
 public class DataModel {
 
-    public int Id;
-    public List<PostsModel> Hot =  new ArrayList<PostsModel>();
+    public int id = 0;
+    public List<PostsModel> hot =  new ArrayList<PostsModel>();
 }
