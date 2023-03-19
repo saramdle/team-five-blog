@@ -1,7 +1,7 @@
-package com.example.demo.Controller;
+package com.example.demo.post.Bean;
 
+import com.example.demo.post.Dto.PostsModel;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

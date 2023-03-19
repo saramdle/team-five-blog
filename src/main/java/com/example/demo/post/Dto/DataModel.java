@@ -1,4 +1,4 @@
-package com.example.demo.Controller;
+package com.example.demo.post.Dto;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.Getter;

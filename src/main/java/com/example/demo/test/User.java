@@ -1,4 +1,4 @@
-package com.example.demo.Controller;
+package com.example.demo.test;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import jakarta.persistence.*;
@@ -23,10 +23,10 @@ public class User {
 
     //아이디
     @Column(name = "Title")
-    private String username;
+    private String title;
 
     //비밀번호
     @Column(name = "Content")
-    private String password;
+    private String content;
 
 }
