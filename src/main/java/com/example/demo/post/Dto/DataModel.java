@@ -9,7 +9,6 @@ import java.util.List;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Getter
 public class DataModel {
-
     public int id = 0;
     public List<PostsModel> hot =  new ArrayList<PostsModel>();
 }

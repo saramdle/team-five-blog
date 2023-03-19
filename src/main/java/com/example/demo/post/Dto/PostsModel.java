@@ -1,16 +1,13 @@
 package com.example.demo.post.Dto;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.hibernate.grammars.hql.HqlParser;
+import lombok.*;
 
 import java.util.Date;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Getter
+@Setter
 @Entity
 @Builder
 @AllArgsConstructor
@@ -35,7 +32,7 @@ public class PostsModel {
     private String img;
 
     @Column(name = "Date")
-    private Date updateDt;
+    private Date date;
 
     @Column(name = "Uid")
     private int uid;

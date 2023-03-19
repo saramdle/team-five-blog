@@ -10,4 +10,6 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<PostsModel, Long> {
     public List<PostsModel> findAll();
     public PostsModel findById(int id);
+    public void deleteById(int id);
+    public PostsModel save(PostsModel model);
 }
