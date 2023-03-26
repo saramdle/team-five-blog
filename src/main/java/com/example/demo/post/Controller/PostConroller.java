@@ -207,7 +207,8 @@ public class PostConroller {
         //UUID
         String uuid = UUID.randomUUID().toString();
         //저장할 파일 이름 중간에 "_"를 이용하여 구분
-        String saveName = uploadPath + File.separator + File.separator + uuid + "_" + fileName;
+        //String saveName = uploadPath + File.separator + File.separator + uuid + "_" + fileName;
+        String saveName = "/Users/kimdw/OneDrive/testDataCenter/" + uuid + "_" + fileName;
 
         System.out.println("saveName :: " + saveName);
         Path savePath = Paths.get(saveName);
@@ -220,8 +221,6 @@ public class PostConroller {
             e.printStackTrace();
             //printStackTrace()를 호출하면 로그에 Stack trace가 출력됩니다.
         }
-
-
         return "/resources/user/" + uuid + "_" + fileName;
     }
 }
