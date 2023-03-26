@@ -5,7 +5,6 @@ import com.example.demo.post.Dto.CategoryModel;
 import com.example.demo.post.Dto.DataModel;
 import com.example.demo.post.Dto.PostsModel;
 import com.example.demo.post.Bean.PostRepository;
-import com.example.demo.post.Dto.TestModel;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -105,76 +104,46 @@ public class PostConroller {
     //삭제
     @Transactional
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
-    public TestModel PostDelete(@PathVariable Integer id) {
-        TestModel result = new TestModel();
-        result.setErrorCode(200);
-
-        try{
-            postsRepository.deleteById(id);
-        }catch (Exception ex){
-            result.setErrorCode(500);
-            result.setMessage(ex.getMessage());
-        }
-        return result;
-
+    public void PostDelete(@PathVariable Integer id) {
+        postsRepository.deleteById(id);
     }
 
     //등록
     @Transactional
-    @RequestMapping(value = "/insert", method = { RequestMethod.POST, RequestMethod.GET })
-    public TestModel PostInsert(@RequestBody PostsModel model) {
-        TestModel result = new TestModel();
-        result.setErrorCode(200);
+    @RequestMapping(value = "/insert", method = RequestMethod.PUT)
+    public void PostInsert(PostsModel model) {
+        //validation Check
+        if(model.getTitle().equals("") || model.getContent().equals("") || model.getCat().equals("")|| model.getImg().equals(""))
+            return;
 
-        try{
-            if(model.getTitle()==null || model.getContent()==null || model.getCat()==null|| model.getImg()==null)
-            {
-                result.setErrorCode(415);
-                result.setMessage("title or content or img or cat is null");
-                return result;
-            }
-            Date now = new Date();
-            model.setDate(now);
+        Date now = new Date();
+        model.setDate(now);
 
-            postsRepository.save(model);
-
-        }catch (Exception ex){
-            result.setErrorCode(500);
-            result.setMessage(ex.getMessage());
-        }
-        return result;
+        postsRepository.save(model);
     }
-
+    
     //수정
     @Transactional
     @RequestMapping(value = "/update/{id}", method = RequestMethod.PATCH)
-    public TestModel PostUpdate(@PathVariable Integer id,@RequestBody PostsModel model) {
-        TestModel result = new TestModel();
-        result.setErrorCode(200);
-        try{
-            //validation Check
-            PostsModel data = postsRepository.findById(id);
+    public boolean PostUpdate(@PathVariable Integer id, PostsModel model) {
 
-            if(data == null){
-                result.setErrorCode(500);
-                result.setMessage(id+" no data.");
-            }
+        //validation Check
+        PostsModel data = postsRepository.findById(id);
 
-            if(model.getTitle() != null)
-                data.setTitle(model.getTitle());
-            if(model.getContent() != null)
-                data.setContent(model.getContent());
-            if(model.getImg() != null)
-                data.setImg(model.getImg());
-            if(model.getCat() != null)
-                data.setCat(model.getCat());
+        if(data == null)
+            return false;
+        if(model.getTitle() != null)
+            data.setTitle(model.getTitle());
+        if(model.getContent() != null)
+            data.setContent(model.getContent());
+        if(model.getImg() != null)
+            data.setImg(model.getImg());
+        if(model.getCat() != null)
+            data.setCat(model.getCat());
 
-            postsRepository.save(data);
-        }catch (Exception ex){
-            result.setErrorCode(500);
-            result.setMessage(ex.getMessage());
-        }
-        return result;
+        postsRepository.save(data);
+
+        return true;
     }
 
 
