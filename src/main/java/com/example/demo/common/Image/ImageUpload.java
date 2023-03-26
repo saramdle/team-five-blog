@@ -14,7 +14,7 @@ public class ImageUpload {
 
     @Value("${part4.upload.path}")
     private static String uploadPath;
-
+/*
     //이미지 업로드기능
     public static String UploadImg(MultipartFile uploadFile){
         String url = ImageUpload.UploadImg(uploadFile);
@@ -45,5 +45,6 @@ public class ImageUpload {
 
         return "/resources/user/" + uuid + "_" + fileName;
     }
+    */
 
 }
