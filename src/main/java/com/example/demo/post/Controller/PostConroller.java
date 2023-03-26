@@ -1,36 +1,33 @@
 package com.example.demo.post.Controller;
 
+import com.example.demo.common.Image.ImageUpload;
 import com.example.demo.post.Bean.CategoryRepository;
 import com.example.demo.post.Dto.CategoryModel;
 import com.example.demo.post.Dto.DataModel;
 import com.example.demo.post.Dto.PostsModel;
 import com.example.demo.post.Bean.PostRepository;
-import com.example.demo.post.Dto.TestModel;
+import com.example.demo.common.Bean.ResultModel;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 @CrossOrigin
 @RestController
 public class PostConroller {
-
-
-    @Value("${part4.upload.path}")
-    private String uploadPath;
 
     @Autowired
     private PostRepository postsRepository;
@@ -56,6 +53,8 @@ public class PostConroller {
     @RequestMapping(value = "/postList", method = RequestMethod.GET)
     public DataModel[] PostList() {
         List<PostsModel> postList = postsRepository.findAll();
+
+
         System.out.println("postList cnt :: " + postList.size());
         if(postList.size() == 0){
             return null;
@@ -78,18 +77,22 @@ public class PostConroller {
         int temp2 = 0;
         int c = 0;
         for (int i = 0; i <= postList.size(); i++) {
+
             if (c == 3) {
                 if (i != postList.size()) {
                     temp2++;
                     temp++;
+                    postList.get(i).setContent(postList.get(i).getContent().replaceAll("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>", ""));
                     models[temp2].hot.add(postList.get(i));
                     c = 1;
                 }
             } else {
                 if (models[temp2].id == 0)
                     models[temp2].id = temp;
-                if (i != postList.size())
+                if (i != postList.size()){
+                    postList.get(i).setContent(postList.get(i).getContent().replaceAll("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>", ""));
                     models[temp2].hot.add(postList.get(i));
+                }
                 c++;
             }
         }
@@ -105,8 +108,8 @@ public class PostConroller {
     //삭제
     @Transactional
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
-    public TestModel PostDelete(@PathVariable Integer id) {
-        TestModel result = new TestModel();
+    public ResultModel PostDelete(@PathVariable Integer id) {
+        ResultModel result = new ResultModel();
         result.setErrorCode(200);
 
         try{
@@ -122,8 +125,8 @@ public class PostConroller {
     //등록
     @Transactional
     @RequestMapping(value = "/insert", method = { RequestMethod.POST, RequestMethod.GET })
-    public TestModel PostInsert(@RequestBody PostsModel model) {
-        TestModel result = new TestModel();
+    public ResultModel PostInsert(@RequestBody PostsModel model) {
+        ResultModel result = new ResultModel();
         result.setErrorCode(200);
 
         try{
@@ -148,8 +151,8 @@ public class PostConroller {
     //수정
     @Transactional
     @RequestMapping(value = "/update/{id}", method = RequestMethod.PATCH)
-    public TestModel PostUpdate(@PathVariable Integer id,@RequestBody PostsModel model) {
-        TestModel result = new TestModel();
+    public ResultModel PostUpdate(@PathVariable Integer id, @RequestBody PostsModel model) {
+        ResultModel result = new ResultModel();
         result.setErrorCode(200);
         try{
             //validation Check
@@ -177,39 +180,21 @@ public class PostConroller {
         return result;
     }
 
+    //검색
+    @RequestMapping(value = "/search", method = RequestMethod.POST)
+    public List<PostsModel> SearchPost(@RequestParam("search") String search) {
+        List<PostsModel> searchList = postsRepository.postSearch(search);
+        System.out.println("searchList cnt :: " + searchList.size());
+        for (PostsModel data : searchList)
+            data.setContent(data.getContent().replaceAll("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>", ""));
+        return searchList;
+    }
 
-
-    //이미지 업로드처리(작업중)
+    //이미지 업로드처리
     @Transactional
-    @RequestMapping(value = "/ImageUpload", method = RequestMethod.POST)
+    @RequestMapping(value = "/imageUpload", method = RequestMethod.POST)
     public String ImageUpload(@RequestParam MultipartFile uploadFile) throws IOException {
-
-            String originalName = uploadFile.getOriginalFilename();//파일명:모든 경로를 포함한 파일이름
-            String fileName = originalName.substring(originalName.lastIndexOf("//")+1);
-            //예를 들어 getOriginalFileName()을 해서 나온 값이 /Users/Document/bootEx 이라고 한다면
-            //"마지막으로온 "/"부분으로부터 +1 해준 부분부터 출력하겠습니다." 라는 뜻입니다.따라서 bootEx가 됩니다.
-
-            System.out.println("fileName :: " + fileName);
-
-            //UUID
-            String uuid = UUID.randomUUID().toString();
-            //저장할 파일 이름 중간에 "_"를 이용하여 구분
-            String saveName = uploadPath + File.separator + File.separator + uuid + "_" + fileName;
-
-            System.out.println("saveName :: " + saveName);
-            Path savePath = Paths.get(saveName);
-            //Paths.get() 메서드는 특정 경로의 파일 정보를 가져옵니다.(경로 정의하기)
-
-            try{
-                uploadFile.transferTo(savePath);
-                //uploadFile에 파일을 업로드 하는 메서드 transferTo(file)
-            } catch (IOException e) {
-                e.printStackTrace();
-                //printStackTrace()를 호출하면 로그에 Stack trace가 출력됩니다.
-            }
-
-
-        return "/resources/user/"+ uuid + "_" + fileName;
+        return ImageUpload.UploadImg(uploadFile);
     }
 }
 
