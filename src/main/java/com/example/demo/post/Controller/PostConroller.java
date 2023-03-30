@@ -1,12 +1,12 @@
 package com.example.demo.post.Controller;
 
-import com.example.demo.common.Image.ImageUpload;
+import com.example.demo.common.Bean.CustomException;
+import com.example.demo.common.Bean.ErrorCode;
 import com.example.demo.post.Bean.CategoryRepository;
 import com.example.demo.post.Dto.CategoryModel;
 import com.example.demo.post.Dto.DataModel;
 import com.example.demo.post.Dto.PostsModel;
 import com.example.demo.post.Bean.PostRepository;
-import com.example.demo.common.Bean.ResultModel;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,8 +15,6 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -39,6 +37,7 @@ public class PostConroller {
     //전체 카테고리
     @RequestMapping(value = "/categoryList", method = RequestMethod.GET)
     public List<CategoryModel> CategoryList() {
+
         List<CategoryModel> category = categoryRepository.findAll();
         System.out.println("category cnt :: " + category.size());
         return category;
@@ -55,9 +54,8 @@ public class PostConroller {
     @RequestMapping(value = "/postList", method = RequestMethod.GET)
     public DataModel[] PostList() {
         List<PostsModel> postList = postsRepository.findAll();
-
-
         System.out.println("postList cnt :: " + postList.size());
+
         if(postList.size() == 0){
             return null;
         }
@@ -110,59 +108,46 @@ public class PostConroller {
     //삭제
     @Transactional
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
-    public ResultModel PostDelete(@PathVariable Integer id) {
-        ResultModel result = new ResultModel();
-        result.setErrorCode(200);
+    public boolean PostDelete(@PathVariable Integer id) {
 
         try{
             postsRepository.deleteById(id);
         }catch (Exception ex){
-            result.setErrorCode(500);
-            result.setMessage(ex.getMessage());
+            throw new CustomException(ErrorCode.UNSUPPORTED_MEDIA_TYPE);
         }
-        return result;
+        return true;
 
     }
 
     //등록
     @Transactional
     @RequestMapping(value = "/insert", method = { RequestMethod.POST, RequestMethod.GET })
-    public ResultModel PostInsert(@RequestBody PostsModel model) {
-        ResultModel result = new ResultModel();
-        result.setErrorCode(200);
+    public void PostInsert(@RequestBody PostsModel model) {
 
         try{
             if(model.getTitle()==null || model.getContent()==null || model.getCat()==null|| model.getImg()==null)
-            {
-                result.setErrorCode(415);
-                result.setMessage("title or content or img or cat is null");
-                return result;
-            }
+                throw new CustomException(ErrorCode.UNSUPPORTED_MEDIA_TYPE);
             Date now = new Date();
             model.setDate(now);
 
             postsRepository.save(model);
 
         }catch (Exception ex){
-            result.setErrorCode(500);
-            result.setMessage(ex.getMessage());
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
-        return result;
     }
 
     //수정
     @Transactional
     @RequestMapping(value = "/update/{id}", method = RequestMethod.PATCH)
-    public ResultModel PostUpdate(@PathVariable Integer id, @RequestBody PostsModel model) {
-        ResultModel result = new ResultModel();
-        result.setErrorCode(200);
+    public boolean PostUpdate(@PathVariable Integer id, @RequestBody PostsModel model) {
+
         try{
             //validation Check
             PostsModel data = postsRepository.findById(id);
 
             if(data == null){
-                result.setErrorCode(500);
-                result.setMessage(id+" no data.");
+                throw new CustomException(ErrorCode.UNSUPPORTED_MEDIA_TYPE);
             }
 
             if(model.getTitle() != null)
@@ -176,14 +161,13 @@ public class PostConroller {
 
             postsRepository.save(data);
         }catch (Exception ex){
-            result.setErrorCode(500);
-            result.setMessage(ex.getMessage());
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR);
         }
-        return result;
+        return true;
     }
 
     //검색
-    @RequestMapping(value = "/search", method = RequestMethod.POST)
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
     public List<PostsModel> SearchPost(@RequestParam("search") String search) {
         List<PostsModel> searchList = postsRepository.postSearch(search);
         System.out.println("searchList cnt :: " + searchList.size());
