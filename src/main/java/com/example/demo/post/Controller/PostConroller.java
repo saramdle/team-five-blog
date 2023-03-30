@@ -4,7 +4,8 @@ import com.example.demo.common.Bean.CustomException;
 import com.example.demo.common.Bean.ErrorCode;
 import com.example.demo.post.Bean.CategoryRepository;
 import com.example.demo.post.Dto.CategoryModel;
-import com.example.demo.post.Dto.DataModel;
+import com.example.demo.post.Dto.MainPageModel;
+import com.example.demo.post.Dto.PagingPostModel;
 import com.example.demo.post.Dto.PostsModel;
 import com.example.demo.post.Bean.PostRepository;
 import jakarta.transaction.Transactional;
@@ -12,9 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import org.springframework.data.domain.Pageable;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -43,16 +46,27 @@ public class PostConroller {
         return category;
     }
 
-
     //카테고리별 전체목록
     @RequestMapping(value = "/categoryDataSelect/{cat}", method = RequestMethod.GET)
-    public List<PostsModel> CategoryDataSelect(@PathVariable String cat) {
-        return postsRepository.findByCat(cat);
+    public PagingPostModel CategoryDataSelect(@PathVariable String cat, @RequestParam(value = "nextPage" , required = false) Integer nextPage) {
+        if(nextPage == null) {
+            System.out.println("nextPage is null ");
+            nextPage = 0;
+        }
+        System.out.println("nextPage is ::: "+nextPage);
+        PageRequest pageRequest = PageRequest.of(nextPage, 10);
+
+        List<PostsModel> data = postsRepository.findByCatOrderByDateDesc(cat, pageRequest).getContent();
+
+        PagingPostModel result = new PagingPostModel();
+        result.setAllCnt(postsRepository.countByCat(cat));
+        result.setDataList(data);
+        return result;
     }
 
     //전체목록
     @RequestMapping(value = "/postList", method = RequestMethod.GET)
-    public DataModel[] PostList() {
+    public MainPageModel[] PostList() {
         List<PostsModel> postList = postsRepository.findAll();
         System.out.println("postList cnt :: " + postList.size());
 
@@ -67,10 +81,10 @@ public class PostConroller {
         if (lest > 0)
             size += 1;
 
-        DataModel[] models = new DataModel[size];
+        MainPageModel[] models = new MainPageModel[size];
 
         for (int i = 0; i < size; i++) {
-            models[i] = new DataModel();
+            models[i] = new MainPageModel();
         }
 
         int temp = 1;
@@ -168,12 +182,29 @@ public class PostConroller {
 
     //검색
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public List<PostsModel> SearchPost(@RequestParam("search") String search) {
-        List<PostsModel> searchList = postsRepository.postSearch(search);
+    public PagingPostModel SearchPost(@RequestParam("keyword") String search, @RequestParam(value = "nextPage" , required = false) Integer nextPage) {
+        int size = 10;
+        System.out.println("nextPage is ::: "+nextPage);
+        if(nextPage == null) {
+            System.out.println("nextPage is null ");
+            nextPage = 0;
+        }else{
+            nextPage = size * nextPage;
+        }
+
+        //페이징 native Query
+        List<PostsModel> searchList = postsRepository.postSearch(search, nextPage, size);
         System.out.println("searchList cnt :: " + searchList.size());
+
+        //html 제거
         for (PostsModel data : searchList)
             data.setContent(data.getContent().replaceAll("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>", ""));
-        return searchList;
+
+        //결과셋팅
+        PagingPostModel result = new PagingPostModel();
+        result.setAllCnt(postsRepository.postSearchCount(search));
+        result.setDataList(searchList);
+        return result;
     }
 
     //이미지 업로드처리
