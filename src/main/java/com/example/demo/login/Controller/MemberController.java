@@ -16,17 +16,29 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    /** 회원가입 API **/
+    /**
+     * 회원가입 API
+     **/
     @PostMapping("/join")
-    public int join(@Valid @RequestBody MemberDto memberDto) {
-        return memberService.userJoin(memberDto);
+    public boolean join(@Valid @RequestBody MemberDto memberDto) {
+        try{
+            memberService.userJoin(memberDto);
+        }catch (Exception ex){
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        }
+        return true;
     }
 
     /** 회원탈퇴 API
      * @return**/
     @PostMapping("/joinOut")
     public boolean joinOut(@Valid @RequestBody MemberDto memberDto) {
-        return memberService.userJoinOut(memberDto);
+        try{
+            memberService.userJoinOut(memberDto);
+        }catch (Exception ex){
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        }
+        return true;
     }
 
     /** 로그인 API
@@ -35,6 +47,9 @@ public class MemberController {
     @PostMapping("/login")
     public boolean login(@RequestBody MemberDto memberDto) {
         try{
+            if(memberService.userLoginChk(memberDto.getUid()) == false){
+                throw new CustomException(ErrorCode.USER_NOT_FOUND);
+            }
             memberService.login(memberDto);
         }catch (Exception ex){
             throw new CustomException(ErrorCode.USER_NOT_FOUND);

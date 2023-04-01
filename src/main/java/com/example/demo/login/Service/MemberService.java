@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -37,7 +38,7 @@ public class MemberService {
         return memberRepository.save(memberModel).getUid();
     }
 
-    // 회원가입
+    // 회원탈퇴
     @Transactional
     public boolean userJoinOut(MemberDto memberDto){
         memberRepository.deleteByUid(memberDto.getUid());
@@ -55,5 +56,16 @@ public class MemberService {
         }
         // 로그인에 성공하면 email, roles 로 토큰 생성 후 반환
         return jwtTokenProvider.createToken(memberModel.getUserEmail(), memberModel.getRoles());
+    }
+
+    // 회원 여부 체크
+    @Transactional
+    public boolean userLoginChk(int uid){
+        Optional<MemberModel> memberModel = memberRepository.findByUid(uid);
+
+        if(memberModel == null){
+            return false;
+        }
+        return true;
     }
 }
