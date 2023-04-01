@@ -31,7 +31,7 @@ dependencies {
 	implementation 'org.projectlombok:lombok'
 	implementation 'junit:junit:4.13'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
-
+	implementation 'org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder'
 
 }
 

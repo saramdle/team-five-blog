@@ -7,7 +7,7 @@ import com.example.demo.login.Dto.MemberDto;
 import com.example.demo.login.Dto.MemberModel;
 import com.example.demo.login.JwtToken.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +17,7 @@ import java.util.Collections;
 @Service
 public class MemberService {
 
-    private final PasswordEncoder passwordEncoder;
+    private BCryptPasswordEncoder pwEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
 
@@ -26,7 +26,7 @@ public class MemberService {
     public int userJoin(MemberDto memberDto){
         MemberModel memberModel = MemberModel.builder()
                 .uid(memberDto.getUid())
-                .password(passwordEncoder.encode(memberDto.getUserPw()))  //비밀번호 인코딩
+                .password(pwEncoder.encode(memberDto.getUserPw()))  //비밀번호 인코딩
                 .userName(memberDto.getUserName())
                 .userNickNm(memberDto.getUserNickNm())
                 .userSignDate(memberDto.getUserSignDate())
@@ -50,7 +50,7 @@ public class MemberService {
     public String login(MemberDto memberDto){
         MemberModel memberModel = memberRepository.findByUid(memberDto.getUid())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-        if (!passwordEncoder.matches(memberDto.getUserPw(), memberModel.getPassword())) {
+        if (!pwEncoder.matches(memberDto.getUserPw(), memberModel.getPassword())) {
             throw new CustomException(ErrorCode.USERPW_NOT_FOUND);
         }
         // 로그인에 성공하면 email, roles 로 토큰 생성 후 반환
