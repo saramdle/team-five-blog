@@ -22,9 +22,9 @@ public class MemberController {
         return memberService.userJoin(memberDto);
     }
 
-    /** 회원가입 API
+    /** 회원탈퇴 API
      * @return**/
-    @PostMapping("/join")
+    @PostMapping("/joinOut")
     public boolean joinOut(@Valid @RequestBody MemberDto memberDto) {
         return memberService.userJoinOut(memberDto);
     }
