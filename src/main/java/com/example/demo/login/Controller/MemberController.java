@@ -24,8 +24,7 @@ public class MemberController {
      * 회원가입 API
      **/
     @PostMapping("/join")
-    public int join(@RequestBody MemberModel memberModel) {
-        int uid = -1;
+    public boolean join(@RequestBody MemberModel memberModel) {
         try{
             // 입력한 이메일, 아이디 체크
             String resultCode = memberService.userJoinYnChk(memberModel.getUserNm(), memberModel.getUserEmail());
@@ -36,11 +35,11 @@ public class MemberController {
             }
 
             // 회원가입
-            uid = memberService.userJoin(memberModel.getUserNm(), memberModel.getUserEmail(), memberModel.getPassword());
+            memberService.userJoin(memberModel.getUserNm(), memberModel.getUserEmail(), memberModel.getPassword());
         }catch (Exception ex){
             throw new CustomException(ErrorCode.USER_JOIN_ERROR);
         }
-        return uid;
+        return true;
     }
 
     /** 회원탈퇴 API **/
