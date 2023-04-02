@@ -15,8 +15,8 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 @Repository
 public interface PostRepository extends JpaRepository<PostsModel, Long> {
-    //전체조회
-    public List<PostsModel> findAll();
+    //3x3 조회
+    public List<PostsModel> findTop9ByOrderByDateDesc();
     //카테고리별 조회(페이징)
     Page<PostsModel> findByCatOrderByDateDesc(String cat, Pageable pageable);
     //카테고리별 전체갯수

@@ -67,9 +67,7 @@ public class PostConroller {
     //전체목록
     @RequestMapping(value = "/postList", method = RequestMethod.GET)
     public MainPageModel[] PostList() {
-        List<PostsModel> postList = postsRepository.findAll();
-        System.out.println("postList cnt :: " + postList.size());
-
+        List<PostsModel> postList = postsRepository.findTop9ByOrderByDateDesc();
         if(postList.size() == 0){
             return null;
         }
