@@ -11,7 +11,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -32,7 +31,6 @@ public class MemberService {
                 .userNickNm(memberDto.getUserNickNm())
                 .userSignDate(memberDto.getUserSignDate())
                 .userEmail(memberDto.getUserEmail())
-                .roles(Collections.singletonList("ROLE_USER"))         //roles는 최초 USER로 설정
                 .build();
 
         return memberRepository.save(memberModel).getUid();
@@ -55,7 +53,7 @@ public class MemberService {
             throw new CustomException(ErrorCode.USERPW_NOT_FOUND);
         }
         // 로그인에 성공하면 email, roles 로 토큰 생성 후 반환
-        return jwtTokenProvider.createToken(memberModel.getUserEmail(), memberModel.getRoles());
+        return jwtTokenProvider.createToken(memberModel.getUserEmail());
     }
 
     // 회원 여부 체크
