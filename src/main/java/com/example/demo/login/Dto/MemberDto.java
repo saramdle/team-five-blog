@@ -17,17 +17,11 @@ public class MemberDto {
 
     @NotNull
     @Size(min = 8, max = 300)
-    private String userName;
+    private String userNm;
 
-    @NotNull
-    @Size(min = 8, max = 300)
-    private String userNickNm;
-
-    @NotNull
     @Size(min = 8, max = 14)
     private String userSignDate;
 
-    @NotNull
     @Size(min = 3, max = 100)
     private String userEmail;
 
