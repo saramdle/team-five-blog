@@ -22,13 +22,7 @@ public class MemberModel implements UserDetails {
     private String password;
 
     @Column(length = 300, nullable = false)
-    private String userName;
-
-    @Column(length = 300, nullable = false)
-    private String userNickNm;
-
-    @Column(length = 300, nullable = false)
-    private String userSignDate;
+    private String userNm;
 
     @Column(length = 100, nullable = false, unique = true)
     private String userEmail;
