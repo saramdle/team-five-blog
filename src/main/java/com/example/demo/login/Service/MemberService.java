@@ -24,7 +24,7 @@ public class MemberService {
     public int userJoin(String UserNm, String UserEamil, String UserPw){
 
         MemberModel memberModel = MemberModel.builder()
-                .password(pwEncoder.encode(UserPw))  //비밀번호 인코딩
+                .userPw(pwEncoder.encode(UserPw))  //비밀번호 인코딩
                 .userNm(UserNm)
                 .userEmail(UserEamil)
                 .build();
@@ -67,7 +67,7 @@ public class MemberService {
 
                 // 회원가입 여부 확인
                 if(memberDto == null){
-                    throw new CustomException(ErrorCode.UNSUPPORTED_MEDIA_TYPE);
+                    throw new CustomException(ErrorCode.USER_NOT_FOUND);
                 }
             } else {
                 return memberDto;
@@ -83,21 +83,23 @@ public class MemberService {
 
     // 회원 여부 체크
     @Transactional
-    public boolean userJoinYnChk(String UserNm, String UserEamil){
+    public String userJoinYnChk(String UserNm, String UserEamil){
         MemberDto memberDto;
 
-        memberDto = memberRepository.findByUserNm(UserNm);
+        // 이메일 중복 확인
+        memberDto = memberRepository.findByUserEmail(UserEamil);
 
-        // 회원가입 여부 확인
         if(memberDto == null){
-            memberDto = memberRepository.findByUserEmail(UserEamil);
+            // 아이디 중복 확인
+            memberDto = memberRepository.findByUserNm(UserNm);
 
-            // 회원가입 여부 확인
             if(memberDto == null){
-                return true;
+                return "true";
+            } else {
+                return "UserNm";
             }
         }
 
-        return false;
+        return "UserEamil";
     }
 }

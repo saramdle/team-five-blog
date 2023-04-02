@@ -21,6 +21,10 @@ public enum ErrorCode {
 
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "회원정보를 찾을 수 없습니다."),
 
+    USER_EMAIL_FOUND(HttpStatus.FOUND, "중복 가입된 이메일 입니다."),
+
+    USER_USERNM_FOUND(HttpStatus.FOUND, "중복 가입된 아이디 입니다."),
+
     USERPW_NOT_FOUND(HttpStatus.NOT_FOUND, "비밀번호 오류 입니다."),
 
     /*
@@ -34,6 +38,10 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "내부 서버 오류입니다."),
 
     UNSUPPORTED_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "파라메터 오류입니다."),
+
+    USER_JOIN_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "회원가입 도중 내부 서버 오류입니다."),
+
+    USER_LOGIN_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "로그인 도중 내부 서버 오류입니다."),
 
 
     ;

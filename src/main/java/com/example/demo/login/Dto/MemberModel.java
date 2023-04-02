@@ -30,6 +30,9 @@ public class MemberModel implements UserDetails {
     @Column(length = 300, nullable = false)
     private String userId;
 
+    @Column(length = 300, nullable = false)
+    private String userPw;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;
@@ -38,6 +41,11 @@ public class MemberModel implements UserDetails {
     @Override
     public String getUsername() {
         return userEmail;
+    }
+
+    @Override
+    public String getPassword() {
+        return userPw;
     }
 
     @Override

@@ -28,14 +28,17 @@ public class MemberController {
         int uid = -1;
         try{
             // 입력한 이메일, 아이디 체크
-            if(memberService.userJoinYnChk(memberModel.getUserNm(), memberModel.getUserEmail()) == false){
-                throw new CustomException(ErrorCode.USER_NOT_FOUND);
+            String resultCode = memberService.userJoinYnChk(memberModel.getUserNm(), memberModel.getUserEmail());
+            if(resultCode == "UserEmail"){
+                throw new CustomException(ErrorCode.USER_EMAIL_FOUND);
+            } else if(resultCode == "UserNm"){
+                throw new CustomException(ErrorCode.USER_USERNM_FOUND);
             }
 
             // 회원가입
             uid = memberService.userJoin(memberModel.getUserNm(), memberModel.getUserEmail(), memberModel.getPassword());
         }catch (Exception ex){
-            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+            throw new CustomException(ErrorCode.USER_JOIN_ERROR);
         }
         return uid;
     }
@@ -79,7 +82,7 @@ public class MemberController {
             jwtToken = memberService.login(memberDto);
 
         }catch (Exception ex){
-            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+            throw new CustomException(ErrorCode.USER_LOGIN_ERROR);
         }
         return jwtToken;
     }
