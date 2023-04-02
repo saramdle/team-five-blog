@@ -15,11 +15,9 @@ public class MemberDto {
     @Size(min = 8, max = 300)
     private String userPw;
 
-    @NotNull
     @Size(min = 8, max = 300)
     private String userName;
 
-    @NotNull
     @Size(min = 8, max = 300)
     private String userNickNm;
 
