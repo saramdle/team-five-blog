@@ -64,7 +64,7 @@ public class MemberController {
     /** 로그인 API **/
     @Transactional
     @RequestMapping(value = "/login", method = { RequestMethod.POST, RequestMethod.GET })
-    public boolean login(@RequestBody MemberModel memberModel) {
+    public String login(@RequestBody MemberModel memberModel) {
         String jwtToken;
 
         try{
@@ -82,6 +82,6 @@ public class MemberController {
         }catch (Exception ex){
             throw new CustomException(ErrorCode.USER_LOGIN_ERROR);
         }
-        return true;
+        return jwtToken;
     }
 }

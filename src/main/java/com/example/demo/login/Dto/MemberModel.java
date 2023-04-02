@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Date;
 
 @Getter
 @NoArgsConstructor
@@ -32,6 +33,9 @@ public class MemberModel implements UserDetails {
 
     @Column(length = 300)
     private String userPw;
+
+    @Column(length = 300)
+    private Date date;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

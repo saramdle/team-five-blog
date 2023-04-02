@@ -11,6 +11,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+
 @RequiredArgsConstructor
 @Service
 public class MemberService {
@@ -21,12 +23,14 @@ public class MemberService {
 
     // 회원가입
     @Transactional
-    public int userJoin(String UserNm, String UserEamil, String UserPw){
+    public int userJoin(String UserNm, String UserEmail, String UserPw){
+        Date now = new Date();
 
         MemberModel memberModel = MemberModel.builder()
                 .userPw(pwEncoder.encode(UserPw))  //비밀번호 인코딩
                 .userNm(UserNm)
-                .userEmail(UserEamil)
+                .userEmail(UserEmail)
+                .date(now)
                 .build();
 
         return memberRepository.save(memberModel).getUid();
@@ -83,11 +87,11 @@ public class MemberService {
 
     // 회원 여부 체크
     @Transactional
-    public String userJoinYnChk(String UserNm, String UserEamil){
+    public String userJoinYnChk(String UserNm, String UserEmail){
         MemberDto memberDto;
 
         // 이메일 중복 확인
-        memberDto = memberRepository.findByUserEmail(UserEamil);
+        memberDto = memberRepository.findByUserEmail(UserEmail);
 
         if(memberDto == null){
             // 아이디 중복 확인
@@ -100,6 +104,6 @@ public class MemberService {
             }
         }
 
-        return "UserEamil";
+        return "UserEmail";
     }
 }
