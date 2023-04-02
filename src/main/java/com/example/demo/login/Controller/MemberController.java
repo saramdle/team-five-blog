@@ -5,12 +5,10 @@ import com.example.demo.common.Bean.ErrorCode;
 import com.example.demo.login.Dto.MemberDto;
 import com.example.demo.login.Dto.MemberModel;
 import com.example.demo.login.Service.MemberService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @CrossOrigin
@@ -20,10 +18,9 @@ public class MemberController {
     private final MemberService memberService;
     private BCryptPasswordEncoder pwEncoder;
 
-    /**
-     * 회원가입 API
-     **/
-    @PostMapping("/join")
+    /** 회원가입 API **/
+    @Transactional
+    @RequestMapping(value = "/join", method = { RequestMethod.POST, RequestMethod.GET })
     public boolean join(@RequestBody MemberModel memberModel) {
         try{
             // 입력한 이메일, 아이디 체크
@@ -43,7 +40,8 @@ public class MemberController {
     }
 
     /** 회원탈퇴 API **/
-    @PostMapping("/joinOut")
+    @Transactional
+    @RequestMapping(value = "/joinOut", method = { RequestMethod.POST, RequestMethod.GET })
     public boolean joinOut(@RequestBody MemberModel memberModel) {
         try{
             // 회원가입 여부 및 uid 조회
@@ -64,8 +62,9 @@ public class MemberController {
     }
 
     /** 로그인 API **/
-    @PostMapping("/login")
-    public String login(@RequestBody MemberModel memberModel) {
+    @Transactional
+    @RequestMapping(value = "/login", method = { RequestMethod.POST, RequestMethod.GET })
+    public boolean login(@RequestBody MemberModel memberModel) {
         String jwtToken;
 
         try{
@@ -83,6 +82,6 @@ public class MemberController {
         }catch (Exception ex){
             throw new CustomException(ErrorCode.USER_LOGIN_ERROR);
         }
-        return jwtToken;
+        return true;
     }
 }

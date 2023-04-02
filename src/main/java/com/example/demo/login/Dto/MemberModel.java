@@ -18,19 +18,19 @@ public class MemberModel implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int uid;
 
-    @Column(length = 300, nullable = false)
+    @Column(length = 300)
     private String password;
 
-    @Column(length = 300, nullable = false)
+    @Column(length = 300)
     private String userNm;
 
-    @Column(length = 300, nullable = false)
+    @Column(length = 300)
     private String userEmail;
 
-    @Column(length = 300, nullable = false)
+    @Column(length = 300)
     private String userId;
 
-    @Column(length = 300, nullable = false)
+    @Column(length = 300)
     private String userPw;
 
     @Override
