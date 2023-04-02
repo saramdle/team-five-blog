@@ -7,11 +7,13 @@ import com.example.demo.login.Dto.MemberModel;
 import com.example.demo.login.Service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
+@CrossOrigin
 @RestController
 public class MemberController {
 
