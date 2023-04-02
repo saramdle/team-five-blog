@@ -2,14 +2,17 @@ package com.example.demo.login.Dto;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Builder
-public abstract class MemberModel implements UserDetails {
+public class MemberModel implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +32,11 @@ public abstract class MemberModel implements UserDetails {
 
     @Column(length = 100, nullable = false, unique = true)
     private String userEmail;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
 
     @Override
     public String getUsername() {
