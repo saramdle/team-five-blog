@@ -24,8 +24,11 @@ public class MemberModel implements UserDetails {
     @Column(length = 300, nullable = false)
     private String userNm;
 
-    @Column(length = 100, nullable = false, unique = true)
+    @Column(length = 300, nullable = false)
     private String userEmail;
+
+    @Column(length = 300, nullable = false)
+    private String userId;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

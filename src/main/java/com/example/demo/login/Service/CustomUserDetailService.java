@@ -20,7 +20,7 @@ public class CustomUserDetailService implements UserDetailsService {
         UserDetails userDetails;
 
         try{
-            userDetails = memberRepository.findByUserEmail(userEmail);
+            userDetails = (UserDetails) memberRepository.findByUserEmail(userEmail);
         }catch (Exception ex){
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }

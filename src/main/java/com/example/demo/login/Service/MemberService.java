@@ -3,6 +3,7 @@ package com.example.demo.login.Service;
 import com.example.demo.common.Bean.CustomException;
 import com.example.demo.common.Bean.ErrorCode;
 import com.example.demo.login.Bean.MemberRepository;
+import com.example.demo.login.Dto.MemberDto;
 import com.example.demo.login.Dto.MemberModel;
 import com.example.demo.login.JwtToken.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -33,20 +34,20 @@ public class MemberService {
 
     // 회원탈퇴
     @Transactional
-    public boolean userJoinOut(MemberModel memberModel){
+    public boolean userJoinOut(MemberDto memberDto){
 
-        memberRepository.deleteByUid(memberModel.getUid());
+        memberRepository.deleteByUid(memberDto.getUid());
 
         return true;
     }
 
     // 로그인
     @Transactional
-    public String login(MemberModel memberModel){
+    public String login(MemberDto memberDto){
         String jwtToken;
 
         // 로그인에 성공하면 email, roles 로 토큰 생성 후 반환
-        jwtToken = jwtTokenProvider.createToken(memberModel.getUserEmail());
+        jwtToken = jwtTokenProvider.createToken(memberDto.getUserEmail());
 
         return jwtToken;
     }
@@ -54,45 +55,45 @@ public class MemberService {
 
     // 회원 여부 체크, uid 조회
     @Transactional
-    public MemberModel userJoinChk(String UserId){
-        MemberModel memberModel;
+    public MemberDto userJoinChk(String UserId){
+        MemberDto memberDto;
 
         try{
-            memberModel = memberRepository.findByUserNm(UserId);
+            memberDto = memberRepository.findByUserNm(UserId);
 
             // 회원가입 여부 확인
-            if(memberModel == null){
-                memberModel = memberRepository.findByUserEmail(UserId);
+            if(memberDto == null){
+                memberDto = memberRepository.findByUserEmail(UserId);
 
                 // 회원가입 여부 확인
-                if(memberModel == null){
+                if(memberDto == null){
                     throw new CustomException(ErrorCode.UNSUPPORTED_MEDIA_TYPE);
                 }
             } else {
-                return memberModel;
+                return memberDto;
             }
 
         } catch (Exception ex){
             // 입력값 오류
             throw new CustomException(ErrorCode.UNSUPPORTED_MEDIA_TYPE);
         }
-        return memberModel;
+        return memberDto;
     }
 
 
     // 회원 여부 체크
     @Transactional
     public boolean userJoinYnChk(String UserNm, String UserEamil){
-        MemberModel memberModel;
+        MemberDto memberDto;
 
-        memberModel = memberRepository.findByUserNm(UserNm);
+        memberDto = memberRepository.findByUserNm(UserNm);
 
         // 회원가입 여부 확인
-        if(memberModel == null){
-            memberModel = memberRepository.findByUserEmail(UserEamil);
+        if(memberDto == null){
+            memberDto = memberRepository.findByUserEmail(UserEamil);
 
             // 회원가입 여부 확인
-            if(memberModel == null){
+            if(memberDto == null){
                 return true;
             }
         }
