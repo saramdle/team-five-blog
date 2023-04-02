@@ -25,7 +25,7 @@ public class MemberController {
         int uid = -1;
         try{
             // 입력한 이메일, 아이디 체크
-            if(memberService.userJoinChk(UserNm, UserEamil) == null){
+            if(memberService.userJoinYnChk(UserNm, UserEamil) == false){
                 throw new CustomException(ErrorCode.USER_NOT_FOUND);
             }
 
@@ -39,10 +39,10 @@ public class MemberController {
 
     /** 회원탈퇴 API **/
     @PostMapping("/joinOut")
-    public boolean joinOut(@RequestBody String UserNm, String UserEamil, String UserPw) {
+    public boolean joinOut(@RequestBody String UserId, String UserPw) {
         try{
             // 회원가입 여부 및 uid 조회
-            MemberModel memberModel = memberService.userJoinChk(UserNm, UserEamil);
+            MemberModel memberModel = memberService.userJoinChk(UserId);
 
             // 회원 비밀번호, 입력한 비밀번호 체크
             if (!pwEncoder.matches(UserPw, memberModel.getPassword())) {
@@ -60,12 +60,12 @@ public class MemberController {
 
     /** 로그인 API **/
     @PostMapping("/login")
-    public String login(@RequestBody String UserNm, String UserEamil, String UserPw) {
+    public String login(@RequestBody String UserId, String UserPw) {
         String jwtToken;
 
         try{
             // 회원가입 여부 및 uid 조회
-            MemberModel memberModel = memberService.userJoinChk(UserNm, UserEamil);
+            MemberModel memberModel = memberService.userJoinChk(UserId);
 
             // 회원 비밀번호, 입력한 비밀번호 체크
             if (!pwEncoder.matches(UserPw, memberModel.getPassword())) {

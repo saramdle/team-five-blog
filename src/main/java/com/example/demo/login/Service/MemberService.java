@@ -54,25 +54,49 @@ public class MemberService {
 
     // 회원 여부 체크, uid 조회
     @Transactional
-    public MemberModel userJoinChk(String UserNm, String UserEamil){
+    public MemberModel userJoinChk(String UserId){
         MemberModel memberModel;
 
-        int uid = -1; // uid 조회 값
+        try{
+            memberModel = memberRepository.findByUserNm(UserId);
 
-        if(UserNm != null){
-            memberModel = memberRepository.findByUserNm(UserNm);
-        } else if(UserEamil != null){
-            memberModel = memberRepository.findByUserEmail(UserEamil);
-        } else {
+            // 회원가입 여부 확인
+            if(memberModel == null){
+                memberModel = memberRepository.findByUserEmail(UserId);
+
+                // 회원가입 여부 확인
+                if(memberModel == null){
+                    throw new CustomException(ErrorCode.UNSUPPORTED_MEDIA_TYPE);
+                }
+            } else {
+                return memberModel;
+            }
+
+        } catch (Exception ex){
             // 입력값 오류
             throw new CustomException(ErrorCode.UNSUPPORTED_MEDIA_TYPE);
         }
+        return memberModel;
+    }
 
-        // 회원가입 여부 확인 필
+
+    // 회원 여부 체크
+    @Transactional
+    public boolean userJoinYnChk(String UserNm, String UserEamil){
+        MemberModel memberModel;
+
+        memberModel = memberRepository.findByUserNm(UserNm);
+
+        // 회원가입 여부 확인
         if(memberModel == null){
-            throw new CustomException(ErrorCode.USERPW_NOT_FOUND);
+            memberModel = memberRepository.findByUserEmail(UserEamil);
+
+            // 회원가입 여부 확인
+            if(memberModel == null){
+                return true;
+            }
         }
 
-        return memberModel;
+        return false;
     }
 }
