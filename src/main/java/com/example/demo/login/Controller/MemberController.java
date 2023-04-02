@@ -61,15 +61,15 @@ public class MemberController {
 
     /** 로그인 API **/
     @PostMapping("/login")
-    public String login(@RequestBody String UserId, String UserPw) {
+    public String login(@RequestBody MemberModel memberModel) {
         String jwtToken;
 
         try{
             // 회원가입 여부 및 uid 조회
-            MemberDto memberDto = memberService.userJoinChk(UserId);
+            MemberDto memberDto = memberService.userJoinChk(memberModel.getUserId());
 
             // 회원 비밀번호, 입력한 비밀번호 체크
-            if (!pwEncoder.matches(UserPw, memberDto.getUserPw())) {
+            if (!pwEncoder.matches(memberModel.getPassword(), memberDto.getUserPw())) {
                 throw new CustomException(ErrorCode.USERPW_NOT_FOUND);
             }
 
